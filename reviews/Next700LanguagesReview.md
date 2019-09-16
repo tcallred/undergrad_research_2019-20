@@ -1,6 +1,6 @@
 # The Next 700 Languages Review
 
-This is being one of the first academic papers I have ever seriously read, I found that there were many things that were hard to understand simply because of a lack of contextual knowledge. This paper was written in the 1960's, when many aspects of programming languages that we consider ubiquitous and given were being thought-up and discussed. While the bulk of this paper was difficult to read and understand (particularly the details of his language specifications) I eventually understood the overall purpose and meaning of the paper and why it still matters today.
+This being one of the first academic papers I have ever seriously read, I found that there were many things that were hard to understand simply because of a lack of contextual knowledge. This paper was written in the 1960's, when many aspects of programming languages that we consider ubiquitous and given were being thought-up and discussed. While the bulk of this paper was difficult to read and understand (particularly the details of his language specifications) I eventually understood the overall purpose and meaning of the paper and why it still matters today.
 
 ## My understanding
 I understood eventually (according to my limited contextual knowledge) that Landin's purpose in writing this paper was twofold: to layout the high-level specifications for a *family* of languages with no particulars about underlying implementation, and to layout the specifications of a language that is both declarative and functional. 
