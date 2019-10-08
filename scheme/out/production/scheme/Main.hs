@@ -1,10 +1,8 @@
 module Main where
-import System.Environment
-
-add :: Int -> Int -> Int
-add a b = a + b
+import Lib
 
 main :: IO ()
-main = do putStrLn "What is your name?"
-          name <- getLine
-          putStrLn $ "Hello, " ++ name
+main = putStrLn $ compileProgram "42"
+ 
+
+
