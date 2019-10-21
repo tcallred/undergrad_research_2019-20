@@ -1,8 +1,7 @@
 module Main where
-import Lib
+
+import Compiler
+
 
 main :: IO ()
-main = putStrLn.unlines $ compileProgram (SNum 42)
- 
-
-
+main = putStrLn . unlines $ compileProgram (Immediate (Character 'c'))

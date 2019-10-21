@@ -4,4 +4,4 @@ import Compiler
 
 
 main :: IO ()
-main = putStrLn . unlines $ compileProgram (Immediate (SNum 42))
+main = putStrLn . unlines $ compileProgram (Immediate (Character 'c'))
