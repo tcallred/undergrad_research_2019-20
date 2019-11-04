@@ -1,7 +1,7 @@
 module Compiler
     ( compileProgram
     , Expr(Immediate)
-    , Immediate(Integer, Character)
+    , Immediate(Integer, Character, Boolean, EmptyList)
     ) where
 
 
@@ -14,7 +14,7 @@ data Immediate =
     Integer Int
     | Character Char
     | Boolean Bool
-    
+    | EmptyList 
 
 newtype Expr =
     Immediate Immediate
@@ -38,6 +38,9 @@ immediateRep immediate =
 
         Boolean b ->
             shift (boolAsInt b) boolShift .|. boolTag
+        
+        EmptyList ->
+            fromIntegral emptyList
     
     where 
         fixNumShift = 2
@@ -46,3 +49,4 @@ immediateRep immediate =
         boolAsInt b = if b then 1 else 0
         boolShift = 7
         boolTag = 31
+        emptyList = 47
