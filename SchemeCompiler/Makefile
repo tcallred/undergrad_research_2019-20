@@ -1,6 +1,9 @@
 all: test_driver
 	./test_driver
 
+checkAsm: scheme_entry.s
+	cat scheme_entry.s
+
 clean:
 	rm -f Main scheme_entry.o scheme_entry.s test_driver.o test_driver
 # The compiled haskell. Running ./Main will produce the desired asm

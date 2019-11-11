@@ -2,3 +2,5 @@
 scheme.cabal
 *~
 out/
+*.o
+*.hi

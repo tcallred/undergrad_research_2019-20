@@ -1,7 +1,8 @@
 module Compiler
     ( compileProgram
-    , Expr(Immediate)
+    , Expr(Immediate, Primcall)
     , Immediate(Integer, Character, Boolean, EmptyList)
+    , Primcall(Add1, Sub1)
     ) where
 
 
@@ -10,22 +11,41 @@ import Data.Bits
 import Data.Char
 
 
+data Expr =
+    Immediate Immediate
+    | Primcall Primcall
+    
+
 data Immediate =
     Integer Int
     | Character Char
     | Boolean Bool
     | EmptyList 
 
-newtype Expr =
-    Immediate Immediate
-    
+
+data Primcall =
+    Add1 Expr
+    | Sub1 Expr
+
 
 compileProgram :: Expr -> [String]
-compileProgram x =
+compileProgram x = emitExpr x
+
+
+emitExpr :: Expr -> [String]
+emitExpr x =
     case x of
         Immediate immediate -> 
-            ("movl $" ++ (show . immediateRep) immediate ++ ", %eax") : ["ret"]
-        
+            ["movl $" ++ (show . immediateRep) immediate ++ ", %eax"]
+    
+        Primcall primcall ->
+            case primcall of
+                Add1 operand ->
+                    (emitExpr operand) ++ ["addl $" ++ (show . immediateRep) (Integer 1) ++ ", %eax"]
+                
+                Sub1 operand ->
+                    (emitExpr operand) ++ ["subl $" ++ (show . immediateRep) (Integer 1) ++ ", %eax"]
+
 
 immediateRep :: Immediate -> Word32
 immediateRep immediate =
@@ -50,3 +70,5 @@ immediateRep immediate =
         boolShift = 7
         boolTag = 31
         emptyList = 47
+
+

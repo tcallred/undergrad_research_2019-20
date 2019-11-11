@@ -30,15 +30,19 @@ int main(int argc, char** argv) {
     if ((val & fixnum_mask) == fixnum_tag) {
         printf("%d\n", val >> fixnum_shift);
     }
+
     else if ((val & char_mask) == char_tag) {
         printf("%c\n", val >> char_shift);
     }
+
     else if ((val & bool_mask) == bool_tag) {
         printf("%s\n", bool_rep(val >> bool_shift));
     }
+
     else if (val == empty_list) {
         printf("()\n");
     }
+
     else {
         printf("Unknown: %d\n", val);
     }
