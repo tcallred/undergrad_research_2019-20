@@ -28,23 +28,31 @@ data Primcall =
     | Sub1 Expr
 
 
-compileProgram :: Expr -> [String]
-compileProgram x = emitExpr x
+compileProgram :: Expr -> IO ()
+compileProgram x = do
+    putStrLn ".global scheme_entry"
+    putStrLn ".type scheme_entry, @function"
+    putStrLn "scheme_entry:"
+    -- Generated code starts here
+    emitExpr x
+    putStrLn "ret"
 
 
-emitExpr :: Expr -> [String]
+emitExpr :: Expr -> IO ()
 emitExpr x =
     case x of
-        Immediate immediate -> 
-            ["movl $" ++ (show . immediateRep) immediate ++ ", %eax"]
+        Immediate immediate -> do
+            putStrLn ("movl $" ++ (show . immediateRep) immediate ++ ", %eax")
     
         Primcall primcall ->
             case primcall of
-                Add1 operand ->
-                    (emitExpr operand) ++ ["addl $" ++ (show . immediateRep) (Integer 1) ++ ", %eax"]
+                Add1 operand -> do
+                    emitExpr operand 
+                    putStrLn ("addl $" ++ (show . immediateRep) (Integer 1) ++ ", %eax")
                 
-                Sub1 operand ->
-                    (emitExpr operand) ++ ["subl $" ++ (show . immediateRep) (Integer 1) ++ ", %eax"]
+                Sub1 operand -> do
+                    emitExpr operand 
+                    putStrLn ("subl $" ++ (show . immediateRep) (Integer 1) ++ ", %eax")
 
 
 immediateRep :: Immediate -> Word32
@@ -54,7 +62,7 @@ immediateRep immediate =
             shift (fromIntegral x) fixNumShift
         
         Character c ->
-            shift ((fromIntegral.ord) c) charShift .|. charTag
+            shift ((fromIntegral . ord) c) charShift .|. charTag
 
         Boolean b ->
             shift (boolAsInt b) boolShift .|. boolTag
