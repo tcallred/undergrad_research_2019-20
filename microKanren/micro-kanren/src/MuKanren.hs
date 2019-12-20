@@ -168,10 +168,19 @@ run g =
 
 
 proves gamma e a =
+
+    -- The type check proves if any of the following goals succeed 
+    -- Note: When I say these "if...then" statements, what I really mean is "all these statements must hold at once" because that is the definition of conj
     disj 
+
+    -- First, if the expression e unifies with a literal term then the type unifies with its type
+    -- In this case only Number literals are considered
     (callFresh 
         (\n -> conj (e <=> NumLit) (a <=> NumT)))
-        
+
+    -- If the expression is an application of some expression e0 to another expression e1
+    -- then gamma proves that e0 has type ArrowT from some type b to a
+    -- and gamma proves that e1 is of some type b
     (disj 
     (callFresh 
         (\e0 -> 
@@ -182,7 +191,12 @@ proves gamma e a =
                             conj (e <=> App e0 e1) 
                                  (conj (proves gamma e0 (ArrowT b a)) 
                                  (proves gamma e1 b)))))) 
-   
+  
+    -- This is the big work horse
+    -- If e is a lambda expression with formal parameter x and inner expression e0
+    -- then gamma can be extended to be gamma'
+    -- gamma' proves that the type of e0 is c
+    -- and a is of type Arrow from fresh var b to fresh var c
     (disj 
     (callFresh 
         (\x ->
@@ -199,19 +213,26 @@ proves gamma e a =
                                                  (conj (proves gamma' e0 c)
                                                  (a <=> ArrowT b c)))
                                             ))))))
+
+    -- IF e is a reference to a variable x then x can be looked up in gamma and the type will be a
     (callFresh 
         (\x -> 
             conj (e <=> Ref x)
                  (MuKanren.lookup gamma x a)))))
 
     
-                                            
+-- Extending an environment gamma is as simple and unifying this new variable gamma' with a new environment that is the 
+-- construction of a new key and value with the old environment gamma                                            
 extendEnv gamma x a gamma' = gamma' <=> TECons x a gamma 
 
 
 lookup gamma x a =
     callFresh
         (\gamma' -> 
+
+            -- "Looking up key x in gamma is of type a" succeeds if
+            -- Gamma unifies with some environment containing this exact key value pair at its head
+            -- OR gamma has some arbitrary key-value pair y and b at its head and with a new variable gamma', x, and a lookup succeeds
             disj (gamma <=> TECons x a gamma')
                   (callFresh
                     (\y ->
